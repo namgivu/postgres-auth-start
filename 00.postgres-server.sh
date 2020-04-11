@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-export v='postgres_10'  # v aka version
+export v='postgres_11'  # v aka version
 
 echo '--> ENSURE we have postgres instance working'
     docker ps | grep -E "nn.+$v|IMAGE" --color=always; echo
@@ -18,9 +18,9 @@ echo '--> ENSURE we have postgres instance working'
 
 
 echo; echo "--> SUMMARY
-psql://$usr:$psw@$c:$p
-          c=$c
-          p=$p
+    psql://$usr:$psw@$c:$p
+    c=$c
+    p=$p
     usr/psw=$usr/$psw
 "
     printf 'Check if-responding port :p ... '
