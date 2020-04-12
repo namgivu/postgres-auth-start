@@ -9,11 +9,23 @@ source "$SH/.config.sh"
 pg_server_port=`docker ps --format '{{.Names}} {{.Ports}}' | grep -E "$PG_SERVER" | cut -d' ' -f2 | cut -d'-' -f1 | cut -d':' -f2 `; echo "pg_server_port=$pg_server_port"
 
 echo; echo '--> CHECK connection from pg_client to pg_server ... '
-docker exec -it $PG_CLIENT bash -c "
-    PGPASSWORD=$POSTGRES_PASSWORD  psql -U $POSTGRES_USER -h $PG_SERVER -p 5432  -c \"select 'test psql $PG_CLIENT -> $POSTGRES_USER:$POSTGRES_PASSWORD@$PG_SERVER'; \" -t;
-    #          #pass                    #user             #host         #port    #query
-    [[ \$? == 0 ]] && echo 'PASS' || echo 'FAIL'
-"
+    docker exec -it $PG_CLIENT bash -c "
+        PGPASSWORD=$POSTGRES_PASSWORD  psql -U $POSTGRES_USER -h $PG_SERVER -p 5432  -c \"select 'test psql $PG_CLIENT -> $POSTGRES_USER:$POSTGRES_PASSWORD@$PG_SERVER'; \" -t;
+        #          #pass                    #user             #host         #port    #query
+        [[ \$? == 0 ]] && echo 'PASS' || echo 'FAIL'
+    "
 
-#NOTE pg_client call to pg_server via port=5432
-#TODO pg_client call to pg_server via port=pg_server_port, how?
+    #NOTE pg_client call to pg_server via port=5432
+    #TODO pg_client call to pg_server via port=pg_server_port, how?
+
+
+echo; echo "--> CHECK connection from localhost's psql to pg_server ... "
+    has_localhost_psql=`psql --version 1>/dev/null 2>&1; [[ $? == 0 ]] && echo 1 || echo 0`; echo "has_localhost_psql=$has_localhost_psql"
+    if [[ $has_localhost_psql == 1 ]]; then
+        PGPASSWORD=$POSTGRES_PASSWORD  psql -U $POSTGRES_USER -h localhost  -p $pg_server_port  postgres  -c "select 'test psql $PG_CLIENT -> $POSTGRES_USER:$POSTGRES_PASSWORD@$PG_SERVER'; " -t
+        #          #pass                    #user             #host         #port               #db       #query
+        [[ $? == 0 ]] && echo 'PASS' || echo 'FAIL'
+    fi
+
+
+#TODO check for denied user+pass
