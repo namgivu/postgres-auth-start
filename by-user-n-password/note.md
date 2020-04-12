@@ -16,5 +16,11 @@ pg_client   postgres_11    0.0.0.0:20411->5432/tcp
 
 Create pg_xxx instances
 ```bash
-POSTGRES_DOCKER_REPO=../../postgres-docker ./00.create-pg-instances.sh
+POSTGRES_DOCKER_REPO=../../postgres-docker ./00.create-pg-instance.sh
+```
+
+View pg_xxx instances
+```bash
+./01a.view-pg-server.sh 
+./01b.view-pg-client.sh 
 ```

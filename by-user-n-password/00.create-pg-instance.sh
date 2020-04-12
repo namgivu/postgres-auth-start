@@ -9,9 +9,10 @@ source "$SH/.config.sh"
     if [[ ! -d $POSTGRES_DOCKER_REPO ]]; then echo 'Repo folder path not found at $POSTGRES_DOCKER_REPO'; exit 1; fi
     echo "POSTGRES_DOCKER_REPO=$POSTGRES_DOCKER_REPO"
 
-echo '--> WIRE up a postgres instances ...'
-    cd $POSTGRES_DOCKER_REPO;  export STACK_ID='postgres_11'; export CONTAINER_NAME=$PG_SERVER; ./docker/down.sh && ./docker/up.sh;  cd - 1>/dev/null
-    cd $POSTGRES_DOCKER_REPO;  export STACK_ID='postgres_10'; export CONTAINER_NAME=$PG_CLIENT; ./docker/down.sh && ./docker/up.sh;  cd - 1>/dev/null
+    # from :POSTGRES_DOCKER_REPO, do create instances
+    echo '--> WIRE up a postgres instances ...'
+        cd $POSTGRES_DOCKER_REPO;  export STACK_ID='postgres_11'; export CONTAINER_NAME=$PG_SERVER; ./docker/down.sh && ./docker/up.sh;  cd - 1>/dev/null
+        cd $POSTGRES_DOCKER_REPO;  export STACK_ID='postgres_10'; export CONTAINER_NAME=$PG_CLIENT; ./docker/down.sh && ./docker/up.sh;  cd - 1>/dev/null
 
-    # print result
-    echo; docker ps | grep -E "$PG_CLIENT|$PG_SERVER" --color=always
+        # print result
+        echo; docker ps | grep -E "$PG_CLIENT|$PG_SERVER" --color=always

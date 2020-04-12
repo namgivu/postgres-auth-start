@@ -16,15 +16,17 @@ echo '--> ENSURE we have postgres instance working'
     export p=`docker ps --format '{{.Names}} {{.Ports}}' | grep -E "$c" | cut -d' ' -f2 | cut -d'-' -f1 | cut -d':' -f2 `; echo $p  # p aka port
 
     # nail the :user :pass of the instance
-    usr=`docker exec -it $c bash -c 'echo $POSTGRES_USER' `     ; usr=${usr::-1}; echo "usr=$usr"  # remove LF as ending character ref. https://stackoverflow.com/a/27658733/248616
-    psw=`docker exec -it $c bash -c 'echo $POSTGRES_PASSWORD' ` ; psw=${psw::-1}; echo "psw=$psw"  # remove LF as ending character ref. https://stackoverflow.com/a/27658733/248616
+    usr=`docker exec -it $c bash -c 'echo $POSTGRES_USER' `     ; usr=${usr::-1}; echo "usr=$usr"  # remove LF as ending character by ${var::-1} ref. https://stackoverflow.com/a/27658733/248616
+    psw=`docker exec -it $c bash -c 'echo $POSTGRES_PASSWORD' ` ; psw=${psw::-1}; echo "psw=$psw"
+     db=`docker exec -it $c bash -c 'echo $POSTGRES_DB' `       ;  db=${db::-1};  echo "db=$db"
 
 
 echo; echo "--> SUMMARY
-    psql://$usr:$psw@$c:$p
+    psql://$usr:$psw@$c:$p/$db
     c=$c
     p=$p
     usr/psw=$usr/$psw
+    db=$db
 "
     printf 'Check if-responding port :p ... '
     echo 'QUIT' | nc -w 1 localhost $p && echo 'PASS' || echo 'FAIL'  # check responding port ref. https://gist.github.com/namgivu/414b71b4a4c894dcf01494f4f4c225d1
