@@ -14,3 +14,6 @@ docker exec -it $PG_CLIENT bash -c "
     #          #pass                    #user             #host         #port    #query
     [[ \$? == 0 ]] && echo 'PASS' || echo 'FAIL'
 "
+
+#NOTE pg_client call to pg_server via port=5432
+#TODO pg_client call to pg_server via port=pg_server_port, how?
