@@ -1,15 +1,18 @@
 #!/usr/bin/env bash
-export v='postgres_11'  # v aka version
+SH=$(cd `dirname $BASH_SOURCE` && pwd)  # SH aka SCRIPT_HOME
+
+source "$SH/.config.sh"
+    if [[ -z $PG_CLIENT ]]; then echo "Undefined environment variable PG_CLIENT; please define one in $SH/00.create-pg-instances.sh"; exit 1; fi
 
 echo '--> ENSURE we have postgres instance working'
-    docker ps | grep -E "nn.+$v|IMAGE" --color=always; echo
+    docker ps | grep -E "$PG_CLIENT|IMAGE" --color=always; echo
     o='
     CONTAINER ID        IMAGE                COMMAND                  CREATED             STATUS              PORTS                     NAMES
     xxxxxxxxxxxx        postgres:10          "docker-entrypoint.s…"   28 minutes ago      Up 28 minutes       0.0.0.0:20410->5432/tcp   nn_postgres__postgres_10
     '
 
     # nail the :c :p of the instance; c aka container, p aka port
-    export c=`docker ps --format '{{.Names}}' | grep -E "nn.+$v" | head -n1 `; echo $c  # c aka container
+    export c=`docker ps --format '{{.Names}}' | grep -E "$PG_CLIENT" | head -n1 `; echo $c  # c aka container
     export p=`docker ps --format '{{.Names}} {{.Ports}}' | grep -E "$c" | cut -d' ' -f2 | cut -d'-' -f1 | cut -d':' -f2 `; echo $p  # p aka port
 
     # nail the :user :pass of the instance
