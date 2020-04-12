@@ -15,7 +15,3 @@ echo '--> WIRE up a postgres instances ...'
 
     # print result
     echo; docker ps | grep -E "$PG_CLIENT|$PG_SERVER" --color=always
-
-#TODO Try to connect with the custom user+pass in 02.do-connect.sh
-#PGPASSWORD=my_pg_pass psql -U my_pg_user -p 20410 -c 'select 1' -t
-##          #pass              #user

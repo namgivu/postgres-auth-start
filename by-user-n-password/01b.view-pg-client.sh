@@ -2,7 +2,7 @@
 SH=$(cd `dirname $BASH_SOURCE` && pwd)  # SH aka SCRIPT_HOME
 
 source "$SH/.config.sh"
-    if [[ -z $PG_CLIENT ]]; then echo "Undefined environment variable PG_CLIENT; please define one in $SH/00.create-pg-instances.sh"; exit 1; fi
+    if [[ -z $PG_CLIENT ]]; then echo "Undefined environment variable PG_CLIENT; please define one in $SH/.config.sh"; exit 1; fi
 
 echo '--> ENSURE we have postgres instance working'
     docker ps | grep -E "$PG_CLIENT|IMAGE" --color=always; echo
