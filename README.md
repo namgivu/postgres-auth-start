@@ -16,14 +16,14 @@ outcome
 ```
 instance    container                   port
 ---------   ------------------------    -----------------------
-pg server   nn_postgres__postgres_10    0.0.0.0:20410->5432/tcp
-pg client   nn_postgres__postgres_11    0.0.0.0:20411->5432/tcp
+pg_server   nn_postgres__postgres_10    0.0.0.0:20410->5432/tcp
+pg_client   nn_postgres__postgres_11    0.0.0.0:20411->5432/tcp
 
 pg xxx aka postgres xxx
 ```
  
  
-# `00` prepare postgres server instance aka pg server
+# `00` prepare postgres server instance aka pg_server
 version postgres:11
 commands ref. `00.postgres-server.sh`
 we should have 
@@ -38,6 +38,22 @@ Check if-responding port :p ... PASS
 ```
 
 
-# `01` prepare postgres client, aka pg client, to get authenticated against `pg server`
+# `01` prepare postgres client, aka pg_client, to get authenticated against `pg_server`
 version postgres:10
 command ref. `01.postgres-client.sh`
+we should have 
+```
+--> ENSURE we have postgres instance working
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                     NAMES
+8b5a765b7c9b        postgres:10         "docker-entrypoint.s…"   16 minutes ago      Up 16 minutes       0.0.0.0:20410->5432/tcp   nn_postgres__postgres_10
+
+nn_postgres__postgres_10
+
+--> CHECK psql version
+psql (PostgreSQL) 10.12 (Debian 10.12-2.pgdg90+1)
+PASS
+```
+
+ 
+# `02` connect psql pg_client -> pg_server
+commands ref. `02.do-connect.sh`
