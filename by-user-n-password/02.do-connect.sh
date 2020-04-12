@@ -12,8 +12,8 @@ if [[ -z $pg_server_port ]]; then echo 'Something wrong; cannot get :pg_server p
 
 echo; echo '--> CHECK connection from pg_client to pg_server ... '
     docker exec -it $PG_CLIENT bash -c "
-        PGPASSWORD=$POSTGRES_PASSWORD  psql -U $POSTGRES_USER -h $PG_SERVER -p 5432  -c \"select 'test psql $PG_CLIENT -> $POSTGRES_USER:$POSTGRES_PASSWORD@$PG_SERVER'; \" -t;
-        #          #pass                    #user             #host         #port    #query
+        PGPASSWORD=$POSTGRES_PASSWORD  psql -U $POSTGRES_USER -h $PG_SERVER -p 5432  $POSTGRES_DB -c \"select 'test psql $PG_CLIENT -> $POSTGRES_USER:$POSTGRES_PASSWORD@$PG_SERVER'; \" -t;
+        #          #pass                    #user             #host         #port    #db          #query
         [[ \$? == 0 ]] && echo 'PASS' || echo 'FAIL'
     "
 
@@ -27,7 +27,12 @@ echo; echo "--> CHECK connection from localhost's psql to pg_server ... "
         PGPASSWORD=$POSTGRES_PASSWORD  psql -U $POSTGRES_USER -h localhost  -p $pg_server_port  $POSTGRES_DB  -c "select 'test psql $PG_CLIENT -> $POSTGRES_USER:$POSTGRES_PASSWORD@$PG_SERVER'; " -t
         #          #pass                    #user             #host         #port               #db           #query
         [[ $? == 0 ]] && echo 'PASS' || echo 'FAIL'
+
+        # check for invalid user+pass
+        echo
+        PGPASSWORD="invalid_$POSTGRES_PASSWORD"  psql -U "invalid_$POSTGRES_USER" -h localhost  -p $pg_server_port  $POSTGRES_DB  -c "select 'test psql $PG_CLIENT -> $POSTGRES_USER:$POSTGRES_PASSWORD@$PG_SERVER'; " -t
+        #          #pass                              #user                      #host         #port               #db           #query
+        [[ $? != 0 ]] && echo 'PASS' || echo 'FAIL'
     fi
 
 
-#TODO check for denied user+pass
